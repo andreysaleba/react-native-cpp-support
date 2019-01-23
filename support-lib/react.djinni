@@ -1,0 +1,124 @@
+Job = interface +c {
+  run();
+}
+
+JobQueue = interface +c {
+  poll(): Job;
+  interruptPoll();
+}
+
+JobDispatcher = interface +j +o {
+  start();
+  quit();
+}
+
+ReactBridge = interface +j +o {
+  createMap(): JavascriptMap;
+  createArray(): JavascriptArray;
+
+  copyMap(map: JavascriptMap): JavascriptMap;
+  copyArray(array: JavascriptArray): JavascriptArray;
+
+  emitEventWithMap(name: string, params: JavascriptMap);
+  emitEventWithArray(name: string, params: JavascriptArray);
+
+  createJobDispatcher(queue: JobQueue): JobDispatcher;
+}
+
+JavascriptType = enum {
+  NIL;
+  BOOLEAN;
+  NUMBER;
+  STRING;
+  ARRAY;
+  MAP;
+}
+
+JavascriptObject = interface +c {
+  getType(): JavascriptType;
+  isNull(): bool;
+  static fromNull(): JavascriptObject;
+  asBoolean(): bool;
+  static fromBoolean(value: bool): JavascriptObject;
+  asDouble(): f64;
+  static fromDouble(value: f64): JavascriptObject;
+  asInt(): i32;
+  static fromInt(value: i32): JavascriptObject;
+  asString(): string;
+  static fromString(value: string): JavascriptObject;
+  asArray(): JavascriptArray;
+  static fromArray(value: JavascriptArray): JavascriptObject;
+  asMap(): JavascriptMap;
+  static fromMap(value: JavascriptMap): JavascriptObject;
+}
+
+JavascriptMap = interface +j +o {
+  hasKey(name: string): bool;
+  isNull(name: string): bool;
+  getBoolean(name: string): bool;
+  getDouble(name: string): f64;
+  getInt(name: string): i32;
+  getString(name: string): string;
+  getArray(name: string): JavascriptArray;
+  getMap(name: string): JavascriptMap;
+  getObject(name: string): JavascriptObject;
+  getType(name: string): JavascriptType;
+  keySetIterator(): JavascriptMapKeyIterator;
+
+  putNull(key: string);
+  putBoolean(key: string, value: bool);
+  putDouble(key: string, value: f64);
+  putInt(key: string, value: i32);
+  putString(key: string, value: string);
+  putArray(key: string, value: JavascriptArray);
+  putMap(key: string, value: JavascriptMap);
+  putObject(key: string, value: JavascriptObject);
+
+  merge(source: JavascriptMap);
+}
+
+JavascriptMapKeyIterator = interface +j +o {
+  hasNextKey(): bool;
+  nextKey(): string;
+}
+
+JavascriptArray = interface +j +o {
+  size(): i32;
+  isNull(index: i32): bool;
+  getBoolean(index: i32): bool;
+  getDouble(index: i32): f64;
+  getInt(index: i32): i32;
+  getString(index: i32): string;
+  getArray(index: i32): JavascriptArray;
+  getMap(index: i32): JavascriptMap;
+  getObject(index: i32): JavascriptObject;
+  getType(index: i32): JavascriptType;
+
+  pushNull();
+  pushBoolean(value: bool);
+  pushDouble(value: f64);
+  pushInt(value: i32);
+  pushString(value: string);
+  pushArray(array: JavascriptArray);
+  pushMap(map: JavascriptMap);
+  pushObject(object: JavascriptObject);
+
+  append(source: JavascriptArray);
+}
+
+JavascriptCallback = interface +j +o {
+  invoke(args: list<JavascriptObject>);
+  invokeSingleArg(arg: JavascriptObject);
+}
+
+JavascriptPromise = interface +j +o {
+  resolveNull();
+  resolveBoolean(value: bool);
+  resolveDouble(value: f64);
+  resolveInt(value: i32);
+  resolveString(value: string);
+  resolveArray(value: JavascriptArray);
+  resolveMap(value: JavascriptMap);
+  resolveObject(value: JavascriptObject);
+  reject(code: string, message: string);
+}
