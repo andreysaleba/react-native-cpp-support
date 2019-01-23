@@ -17,4 +17,6 @@ DemoModule = interface +r {
 
   testEventWithArray(value: JavascriptArray);
   testEventWithMap(value: JavascriptMap);
+
+  getOpenSSLVersion(promise: JavascriptPromise);
 }
